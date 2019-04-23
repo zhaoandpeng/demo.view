@@ -37,7 +37,9 @@ public class LocalAuthenticationSuccessHandler implements AuthenticationSuccessH
 		
 		session.setAttribute("baseUser", baseUser);
 		
-		request.getRequestDispatcher("/main").forward(request, response);
+//		request.getRequestDispatcher("/main").forward(request, response);
+		
+		response.sendRedirect("/main"); 
 		
 	}
 
