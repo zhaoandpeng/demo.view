@@ -13,7 +13,7 @@ import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.service.BaseUserService;
 
 @Service
-public class BaseUserImpl extends BaseServiceImpl<BaseUser,java.lang.String> implements BaseUserService, UserDetailsService{
+public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.String> implements BaseUserService, UserDetailsService{
 	
 	
 	
