@@ -17,7 +17,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label"><i class="layui-icon layui-icon-username" style="font-size: 14px">&ensp;用户名</i></label>
 						<div class="layui-input-block">
-	      					<input type="text" name="username" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+	      					<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 	   					</div>
 					</div>
 				</div>
@@ -27,7 +27,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label"><i class="layui-icon layui-icon-password" style="font-size: 14px"></i>&ensp;密&ensp;&ensp;码</label>
 						<div class="layui-input-block">
-	      					<input type="password" name="password" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+	      					<input type="password" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
 	   					</div>
 					</div>
 				</div>

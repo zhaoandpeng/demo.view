@@ -2,6 +2,7 @@ package com.cn.demo.view.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +37,9 @@ public class BaseUser implements Serializable, UserDetails{
     private String headImg;
 
     private Integer age;
+    
+    @SuppressWarnings("rawtypes")
+	private List role;
 
     public String getId() {
         return id;
@@ -118,9 +122,10 @@ public class BaseUser implements Serializable, UserDetails{
     }
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return role;
 	}
 
 	@Override
@@ -146,4 +151,9 @@ public class BaseUser implements Serializable, UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+	public void setRole(List role) {
+		this.role = role;
+	}
+	
 }
