@@ -10,14 +10,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.cn.demo.view.service.impl.BaseUserImpl;
+import com.cn.demo.view.service.impl.BaseUserServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter  {
 	
 	
 	@Resource
-	private BaseUserImpl baseUserImpl;
+	private BaseUserServiceImpl baseUserImpl;
+	
+	@Resource
+	private LocalAuthenticationSuccessHandler localAuthenticationSuccessHandler;
 
 	@Resource
 	private LocalDefaultLoginProperties localDefaultLoginProperties;
@@ -33,6 +36,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter  {
 				.loginProcessingUrl("/login")
 				.failureUrl(localDefaultLoginProperties.getLoginPage())
 				.defaultSuccessUrl("/main")
+				.successHandler(localAuthenticationSuccessHandler)
 				.permitAll();
 	}
 
