@@ -42,7 +42,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter  {
 				.failureUrl(localDefaultLoginProperties.getLoginPage())
 //				.defaultSuccessUrl("/main")
 				.successHandler(localAuthenticationSuccessHandler)
-				.permitAll();
+				.permitAll()
+				.and()
+				.headers().frameOptions().disable();
 	}
 
 	 @Override

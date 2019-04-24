@@ -1,6 +1,7 @@
 package com.cn.demo.view.service.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -33,6 +34,12 @@ public class BaseServiceImpl<T, K> implements BaseService<T,java.lang.String>{
 	public boolean delete(T t) {
 		
 		return baseDao.delete(t);
+	}
+
+	@Override
+	public List<T> getList(Class<T> clazz, String value, String column) {
+		
+		return baseDao.getList(clazz, value, column);
 	}
 
 }
