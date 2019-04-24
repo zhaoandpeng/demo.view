@@ -38,8 +38,10 @@ public class BaseUser implements Serializable, UserDetails{
 
     private Integer age;
     
-    @SuppressWarnings("rawtypes")
+	@SuppressWarnings("rawtypes")
 	private List role;
+	
+	private List<BaseMenu> roleResources;
 
     public String getId() {
         return id;
@@ -152,8 +154,18 @@ public class BaseUser implements Serializable, UserDetails{
 		return true;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void setRole(List role) {
 		this.role = role;
 	}
+
+	public List<BaseMenu> getRoleResources() {
+		return roleResources;
+	}
+
+	public void setRoleResources(List<BaseMenu> roleResources) {
+		this.roleResources = roleResources;
+	}
+	
 	
 }

@@ -15,10 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.cn.demo.view.dao.BaseMenuDao;
 import com.cn.demo.view.dao.BaseRoleDao;
+import com.cn.demo.view.dao.BaseRoleResourcesDao;
 import com.cn.demo.view.dao.BaseUserDao;
 import com.cn.demo.view.dao.BaseUserRoleDao;
+import com.cn.demo.view.model.BaseMenu;
 import com.cn.demo.view.model.BaseRole;
+import com.cn.demo.view.model.BaseRoleResources;
 import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.model.BaseUserRole;
 import com.cn.demo.view.service.BaseUserService;
@@ -35,6 +39,12 @@ public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.Stri
 	@Resource
 	private BaseRoleDao baseRoleDao;
 	
+	@Resource
+	private BaseMenuDao baseMenuDao;
+	
+	@Resource
+	private BaseRoleResourcesDao baseRoleResourcesDao;
+	
 	@Resource 
 	private PasswordEncoder passwordEncoder;
 	 
@@ -46,14 +56,16 @@ public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.Stri
 		
 		baseUser = this.baseUserDao.getBaseUserByParam(username);
 		
-		Assert.isNull(baseUser, "找不到该账户信息！");
+		Assert.notNull(baseUser, "找不到该账户信息！");
 		
 		//查询用户角色
 		List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
 		
+		List<BaseMenu> listResoure = new ArrayList<BaseMenu>();
+		
 		List<BaseUserRole> listRole = this.baseUserRoleDao.getList(BaseUserRole.class, baseUser.getId(), "USERID");
 		
-		if(!list.isEmpty()) {
+		if(!listRole.isEmpty()) {
 		
 			for (BaseUserRole role: listRole) {
 				
@@ -62,6 +74,16 @@ public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.Stri
 				try {
 					
 					roleName = this.baseRoleDao.get(BaseRole.class, role.getRoleid()).getRoleName();
+					
+					List<BaseRoleResources> roleResoure = this.baseRoleResourcesDao.getList(BaseRoleResources.class, role.getRoleid(), "ROLE_ID");
+					
+					for (BaseRoleResources baseRoleResources : roleResoure) {
+						
+						BaseMenu baseMenu = this.baseMenuDao.get(BaseMenu.class, baseRoleResources.getMenuId());
+						
+						listResoure.add(baseMenu);
+					}
+					
 				
 				} catch (SQLException e) {
 					
@@ -72,6 +94,8 @@ public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.Stri
 			}
 			
 			baseUser.setRole(list);
+			
+			baseUser.setRoleResources(listResoure);
 		}
 		
 		baseUser.setPassword(passwordEncoder.encode(baseUser.getPassword()));

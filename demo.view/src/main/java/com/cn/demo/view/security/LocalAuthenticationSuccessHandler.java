@@ -29,15 +29,11 @@ public class LocalAuthenticationSuccessHandler implements AuthenticationSuccessH
 		
 		BaseUser baseUser = (BaseUser) authentication.getPrincipal();
 		
-//		Assert.isNull(baseUser, "系统无此用户!");
-		
 		springGloabUserRedisUtils.add(UUID.randomUUID().toString(), 5, baseUser);
 		
 		HttpSession session = request.getSession();
 		
 		session.setAttribute("baseUser", baseUser);
-		
-//		request.getRequestDispatcher("/main").forward(request, response);
 		
 		response.sendRedirect("/main"); 
 		
