@@ -39,7 +39,7 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 
 	@Override
 	public List<T> getList(Class<T> clazz, String value, String column) {
-		StringBuffer buffer = new StringBuffer("select * from "+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" where "+column+" = '"+value+"'");
+		StringBuffer buffer = new StringBuffer("select * from "+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" where 1 = 1 and "+column+" = '"+value+"'");
 		List<T> dataList = jdbcTemplate.query(buffer.toString(), new Object[]{}, new BeanPropertyRowMapper<T>(clazz));
 		if(dataList.isEmpty()) {return null;}
 		return dataList;
