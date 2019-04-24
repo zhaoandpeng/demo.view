@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>首页</title>
 <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
@@ -42,15 +43,17 @@
   
 	  	<div class="layui-side layui-bg-black">
 	    	<div class="layui-side-scroll">
-		      	<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
 		      	<ul class="layui-nav layui-nav-tree"  id="memus"></ul><!-- lay-filter="test" -->
 	    	</div>
 	  	</div>
   
-  <div class="layui-body">
-    <!-- 内容主体区域 -->
-    <div style="padding: 15px;">内容主体区域</div>
-  </div>
+		<div class="layui-body">
+			<!-- 动态选项卡 -->
+			<div class="layui-tab layui-tab-brief" lay-filter="demo_tab" lay-allowclose="true">
+			  <ul class="layui-tab-title"> </ul>
+			  <div class="layui-tab-content"></div>
+			</div>
+		</div>
   
   <div class="layui-footer">
     <!-- 底部固定区域 -->
