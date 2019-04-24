@@ -1,7 +1,7 @@
 layui.define(['layer', 'element', 'jquery'], function(exports){
   
 	
-  var layer = layui.layer, element = layui.element, $ = layui.jquery, data = null;
+  var layer = layui.layer, element = layui.element, $ = layui.jquery;
   
   function append_html(obj){
 	  
@@ -13,11 +13,6 @@ layui.define(['layer', 'element', 'jquery'], function(exports){
 	  return arr.length == (i + 1);
   }
   
-  function addTab(a,b){
-	  
-	  
-  }
-
   exports('main', function(){
 	  
 	  $.ajax({
@@ -68,3 +63,24 @@ layui.define(['layer', 'element', 'jquery'], function(exports){
   }); 
 
 });
+
+function addTab(name,url){
+	  
+	  if(layui.jquery(".layui-tab-title li[lay-id='" + name + "']").length > 0) {
+			
+			layui.element.tabChange('demo_tab', name);
+			
+	  } else {
+
+		    var tabheight = layui.jquery(window).height() - 95;
+			
+			html = '<iframe src="' + url + '" scrolling="no" frameborder="0" width="100%" height="' + (tabheight) + 'PX"></iframe>';
+		
+			layui.element.tabAdd('demo_tab', {
+				
+				title: name, content: html, id: name
+			})
+			
+			layui.element.tabChange('demo_tab', name); //切换TAB 
+	  }
+}
