@@ -4,17 +4,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.cn.demo.view.model.BaseRole;
 import com.cn.demo.view.service.BaseRoleService;
-import com.cn.demo.view.utils.LayTableUtils;
 
 import io.netty.util.internal.StringUtil;
 
