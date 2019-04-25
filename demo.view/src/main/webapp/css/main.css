@@ -29,3 +29,15 @@ html, body{
 	
 	background-image: url("../image/index.jpg");
 }
+
+/* 解决表格CheckBox位置偏移问题*/
+.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
+     top: 50%;
+     transform: translateY(-50%);
+}
+
+body .demo-class .layui-layer-title{background:#009688; color:#fff; border: none;}
+/* body .demo-class .layui-layer-btn{border-top:1px solid #E9E7E7} */
+body .demo-class .layui-layer-btn a{background:#009688;color:#fff;}
+body .demo-class .layui-layer-btn .layui-layer-btn0{background:#009688;}
+body .demo-class .layui-layer-btn .layui-layer-btn1{background:#009688;}
