@@ -3,6 +3,7 @@ package com.cn.demo.view.service.impl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -63,7 +64,11 @@ public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.Stri
 		
 		List<BaseMenu> listResoure = new ArrayList<BaseMenu>();
 		
-		List<BaseUserRole> listRole = this.baseUserRoleDao.getList(BaseUserRole.class, baseUser.getId(), "USERID");
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<String,Object>();
+		
+		map.put("USERID", baseUser.getId());
+		
+		List<BaseUserRole> listRole = this.baseUserRoleDao.getList(BaseUserRole.class, map);
 		
 		if(!listRole.isEmpty()) {
 		
@@ -75,7 +80,11 @@ public class BaseUserServiceImpl extends BaseServiceImpl<BaseUser,java.lang.Stri
 					
 					roleName = this.baseRoleDao.get(BaseRole.class, role.getRoleid()).getRoleName();
 					
-					List<BaseRoleResources> roleResoure = this.baseRoleResourcesDao.getList(BaseRoleResources.class, role.getRoleid(), "ROLE_ID");
+					map.clear();
+					
+					map.put("ROLE_ID", role.getRoleid());
+					
+					List<BaseRoleResources> roleResoure = this.baseRoleResourcesDao.getList(BaseRoleResources.class, map);
 					
 					for (BaseRoleResources baseRoleResources : roleResoure) {
 						

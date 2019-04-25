@@ -3,6 +3,7 @@ package com.cn.demo.view.service;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface BaseService<T, K extends Serializable> {
 
@@ -16,5 +17,5 @@ public interface BaseService<T, K extends Serializable> {
 	public abstract boolean delete(T t);
 	
 	
-	public abstract List<T> getList(Class<T> clazz,K value, String column);
+	public abstract List<T> getList(Class<T> clazz,ConcurrentHashMap<String,Object> map);
  }

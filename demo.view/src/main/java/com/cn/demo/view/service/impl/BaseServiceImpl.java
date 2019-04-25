@@ -2,6 +2,7 @@ package com.cn.demo.view.service.impl;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -37,9 +38,9 @@ public class BaseServiceImpl<T, K> implements BaseService<T,java.lang.String>{
 	}
 
 	@Override
-	public List<T> getList(Class<T> clazz, String value, String column) {
+	public List<T> getList(Class<T> clazz, ConcurrentHashMap<String,Object> map) {
 		
-		return baseDao.getList(clazz, value, column);
+		return baseDao.getList(clazz, map);
 	}
 
 }
