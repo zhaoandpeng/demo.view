@@ -43,14 +43,14 @@
   
 	  	<div class="layui-side layui-bg-black">
 	    	<div class="layui-side-scroll">
-		      	<ul class="layui-nav layui-nav-tree"  id="memus"></ul><!-- lay-filter="test" -->
+		      	<ul class="layui-nav layui-nav-tree"  id="memus"></ul>
 	    	</div>
 	  	</div>
   
 		<div class="layui-body">
 			<!-- 动态选项卡 -->
-			<div class="layui-tab layui-tab-brief" lay-filter="demo_tab" lay-allowclose="true">
-			  <ul class="layui-tab-title"> </ul>
+			<div class="layui-tab layui-tab-brief " lay-filter="demo_tab" lay-allowclose="true">
+			  <ul class="layui-tab-title layui-bg-gray"></ul>
 			  <div class="layui-tab-content"></div>
 			</div>
 		</div>

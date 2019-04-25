@@ -10,15 +10,14 @@
 <script type="text/javascript" src="../../../../layui/layui.js"></script>
 </head>
 <body class="layui-layout-body">
+	
+	<table class="layui-table" id="demo" lay-filter="operate"> </table>
 
-
-	<table class="layui-table" id="demo">
-	  
-	</table>
-
-
-
-
+	<div id="toolbar" style="display: none" >
+		<button  class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe608;</i>新增</button>
+		<button  class="layui-btn layui-btn-sm" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</button>
+		<button  class="layui-btn layui-btn-sm" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</button>
+	</div>
 
 <script type="text/javascript">
 	
@@ -28,4 +27,15 @@
 	})
 </script>
 </body>
+
+<form class="layui-form" action="" id="add_form" lay-filter="addform" style="display: none;padding-top: 30px">
+  <div class="layui-form-item" pane>
+    <label class="layui-form-label">角色名称</label>
+    <div class="layui-input-inline ">
+      <input type="text" name="roleName" required  lay-verify="required" class="layui-input">
+    </div>
+  </div>
+</form>
+
+
 </html>
