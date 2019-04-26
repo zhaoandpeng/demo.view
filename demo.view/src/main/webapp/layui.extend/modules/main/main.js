@@ -72,6 +72,7 @@ function addTab(name,url){
 			
 	  } else {
 
+//		    var tabheight = layui.jquery(window).height() - (95 + 60 + 44);
 		    var tabheight = layui.jquery(window).height() - (95 + 60 + 44);
 		    
 			html = '<iframe src="' + url + '" scrolling="no" frameborder="0" width="100%" height="' + (tabheight) + 'PX"></iframe>';

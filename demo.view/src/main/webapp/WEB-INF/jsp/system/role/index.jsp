@@ -11,7 +11,7 @@
 </head>
 <body class="layui-layout-body">
 	
-	<table class="layui-table" id="demo" lay-filter="operate"> </table>
+	<table class="layui-table" id="demo" lay-filter="operate" lay-data="{id: 'mainData'}"> </table>
 
 	<div id="toolbar" style="display: none" >
 		<button  class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe608;</i>新增</button>
@@ -28,7 +28,16 @@
 </script>
 </body>
 
-<form class="layui-form" action="" id="add_form" lay-filter="addform" style="display: none;padding-top: 30px">
+<form class="layui-form" id="add_form" lay-filter="addform" style="display: none;padding-top: 30px">
+  <div class="layui-form-item" pane>
+    <label class="layui-form-label">角色名称</label>
+    <div class="layui-input-inline ">
+      <input type="text" name="roleName" required  lay-verify="required" class="layui-input">
+    </div>
+  </div>
+</form>
+
+<form class="layui-form" id="modify_form" lay-filter="modifyform" style="display: none;padding-top: 30px">
   <div class="layui-form-item" pane>
     <label class="layui-form-label">角色名称</label>
     <div class="layui-input-inline ">

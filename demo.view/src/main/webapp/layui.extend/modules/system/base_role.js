@@ -3,13 +3,11 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 	
   var layer = layui.layer, element = layui.element, $ = layui.jquery,  table = layui.table, form = layui.form ;
   
-  var roleName;
-  
-  table.render({
+  var tableIns = table.render({
+	  	id:'mainData',
 	    elem: '#demo',
 	    skin:'row',
 	    even:true,
-	    height: 312,
 	    toolbar:'#toolbar',
 	    url: '/api/v1/sys/role/index/data',
 	    page: true ,
@@ -23,12 +21,17 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 	    }
   });
   
+  var checkRow = function(){
+	  
+	  var checkStatus = table.checkStatus('mainData'), data = checkStatus.data; return data;
+  }
+  
   table.on('toolbar(operate)', function(obj){
 	  
 	  	var checkStatus = table.checkStatus(obj.config.id) ,data = checkStatus.data; 
 	  	switch(obj.event){
 	  			case 'add': add(); break;
-	  			case 'update': if(data.length === 0){ layer.msg('请选择一项数据'); } else if(data.length > 1){ layer.msg('只允许单条编辑')} break;
+	  			case 'modify': if(data.length === 0){ layer.msg('请选择一项数据'); } else if(data.length > 1){ layer.msg('只允许单条编辑')}else{modify()} break;
 	  			case 'delete': if(data.length === 0){ layer.msg('请选择一行'); } else { layer.msg('删除'); } break;
 	  	};
   });
@@ -37,7 +40,7 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
   
   function add(){
 	  
-	  layer.open({ 
+	  var add = layer.open({ 
 		  type: 1, title:"新增角色",
 		  resize : false,
 		  btn: ['保存', '取消', ],
@@ -50,17 +53,49 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 			  $.ajax({
 				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName},
 				  success: function(result) { 
-					  if(result.status){
-						  layer.msg('保存成功');
+					  if(result.data.status){
+						  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
 					  }else{
-						  layer.msg(result.message);
+						  layer.msg(result.data.message);
 					  }
 				  }
 			  });
-		  },
-		  btn2:function(index, layero){
-			   
 		  }
+	  });
+  }
+  
+  function modify(){
+	  
+	  var roleName = checkRow()[0].roleName;
+	  
+	  var id = checkRow()[0].id;
+	  
+	  $("#modify_form input[name='roleName']").val(roleName);
+	 
+	  var modify = layer.open({ 
+		  type: 1, title:"修改角色",
+		  resize : false,
+		  btn: [  '保存', '取消', ],
+		  btnAlign: 'c',
+		  area: ['350px', '200px'],
+		  skin: 'demo-class',
+		  content: $('#modify_form'),
+		  yes:function(index,layero){
+			  var roleName = $("#modify_form input[name='roleName']").val();
+			  $.ajax({
+				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName, "id":id},
+				  success: function(result) { 
+					  if(result.data.status){
+						  layer.msg('修改成功'); layer.close(modify);  tableIns.reload({ page:{ curr: 1 }});
+					  }else{
+						  layer.msg(result.data.message);
+					  }
+				  }
+			  });
+		  }/*,
+		  success: function(layero, index){
+			  
+		  }*/
 	  });
   }
 });
