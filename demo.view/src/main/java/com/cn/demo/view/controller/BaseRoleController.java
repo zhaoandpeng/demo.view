@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.cn.demo.view.model.BaseRole;
@@ -101,6 +102,37 @@ public class BaseRoleController extends BaseController{
 			}
 		}
 		if(StringUtil.isNullOrEmpty(roleName)&&StringUtil.isNullOrEmpty(roleId)) {
+			
+			resultMap.put("status", false); resultMap.put("message", "参数为空,请检查所传参数");
+		}
+
+		return toJson(resultMap);
+	}
+	
+	@ResponseBody
+	@RequestMapping("/delete/{id}")
+	public String delete(@PathVariable("id") String id) throws SQLException {
+		
+		ConcurrentHashMap<String,Object> resultMap = new ConcurrentHashMap<>();
+		
+		if(!StringUtil.isNullOrEmpty(id)) {
+			
+			String[] arr = id.split(",");
+			
+			for (String primary : arr) {
+				
+				BaseRole baseRole = this.baseRoleService.get(BaseRole.class, primary);
+				
+				if(null!=baseRole) {
+					
+					boolean delete = this.baseRoleService.delete(baseRole);
+					
+					resultMap.put("status", delete);
+				}
+			}
+		}
+		
+		if(StringUtil.isNullOrEmpty(id)) {
 			
 			resultMap.put("status", false); resultMap.put("message", "参数为空,请检查所传参数");
 		}
