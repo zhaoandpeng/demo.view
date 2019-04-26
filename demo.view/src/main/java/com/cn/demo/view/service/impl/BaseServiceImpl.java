@@ -26,9 +26,9 @@ public class BaseServiceImpl<T, K> implements BaseService<T,java.lang.String>{
 	}
 
 	@Override
-	public boolean saveOrUpdate(T t) {
+	public boolean saveOrUpdate(T t, String eventType) {
 		
-		return baseDao.saveOrUpdate(t);
+		return baseDao.saveOrUpdate(t, eventType);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ public interface BaseDao<T, K extends Serializable> {
 
 	T get(Class<T> clazz, K key) throws SQLException ;
 
-	boolean saveOrUpdate(T t);
+	boolean saveOrUpdate(T t, K key);
 
 	boolean delete(T t);
 

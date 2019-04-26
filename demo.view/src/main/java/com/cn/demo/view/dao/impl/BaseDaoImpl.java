@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.cn.demo.view.annotation.TableInfoAnnotation;
 import com.cn.demo.view.dao.BaseDao;
 import com.cn.demo.view.model.SqlEntry;
+import com.cn.demo.view.utils.EventType;
 @Component
 public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 
@@ -23,10 +24,15 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 	private JdbcTemplate jdbcTemplate;
 	
 	@Override
-	public boolean saveOrUpdate(T t) {
+	public boolean saveOrUpdate(T t, String eventType) {
 		SqlEntry entry = null;
 		try {
-			entry = getSaveSql(t);
+			if(EventType.EVENT_ADD.equals(eventType)) {
+				entry = getSaveSql(t);
+			}
+			if(EventType.EVENT_UPDATE.equals(eventType)) {
+				entry = getUpdateSql(t);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
@@ -94,11 +100,7 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 			
 			val = field.get(t);
 			
-			if(fields.length==i) {
-				buffer.append("?");
-			}else {
-				buffer.append("?,");
-			}
+			if(fields.length==i) { buffer.append("?"); }else { buffer.append("?,"); }
 			
 			listField.add(val);
 		}
@@ -110,4 +112,75 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		
 		return entry;
 	}
+	
+	@SuppressWarnings("unused")
+	private  synchronized  SqlEntry  getUpdateSql(T t) throws InstantiationException, IllegalAccessException {
+		
+		SqlEntry entry = new SqlEntry();
+		
+		StringBuffer buffer = new StringBuffer("update "); 
+		
+		Class<? extends Object> clazz = t.getClass();
+		
+		buffer.append(""+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" set ");
+		
+		Field[] fields = clazz.getDeclaredFields();
+		
+		List<Object> listField = new ArrayList<>();
+		
+		int i = 0; Object primary = null;
+		
+		for (Field field : fields) {
+			
+			i++;
+			
+			field.setAccessible(true);
+			
+			if(field.getName().indexOf("serialVersionUID")!=-1) {
+				
+				continue;
+			}
+			
+			if(field.getName().indexOf(clazz.getAnnotation(TableInfoAnnotation.class).primaryKey())!=-1) {
+				
+				primary = field.get(t);
+				
+				continue;
+			}
+			
+			System.out.println(field.getName()+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			
+			Object val = new Object();
+			
+			val = field.get(t);
+			
+			if(fields.length==i) { buffer.append(field.getName()+"=?"); }else { buffer.append(field.getName()+"?,"); }
+			
+			listField.add(val);
+		}
+		buffer.append(" where ");
+		
+		buffer.append(""+clazz.getAnnotation(TableInfoAnnotation.class).primaryKey()+" = ?");
+		
+		entry.setSql(buffer.toString());
+		
+		listField.add(primary);
+		
+		entry.setObj(listField.toArray(new Object[listField.size()]));
+		
+		return entry;
+	}
+	
+	
+	/*
+	 * public static void main(String[] args) { List<String> list = new
+	 * ArrayList<>();
+	 * 
+	 * 
+	 * list.add("1"); list.add("2"); list.add("3"); list.add("4"); list.add("5");
+	 * 
+	 * 
+	 * 
+	 * }
+	 */
 }
