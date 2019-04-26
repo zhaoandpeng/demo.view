@@ -32,7 +32,7 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 	  	switch(obj.event){
 	  			case 'add': add(); break;
 	  			case 'modify': if(data.length === 0){ layer.msg('请选择一项数据'); } else if(data.length > 1){ layer.msg('只允许单条编辑')}else{modify()} break;
-	  			case 'delete': if(data.length === 0){ layer.msg('请选择一行'); } else { layer.msg('删除'); } break;
+	  			case 'delete': if(data.length === 0){ layer.msg('请选择一行'); } else { del(data) } break;
 	  	};
   });
   
@@ -92,10 +92,28 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 					  }
 				  }
 			  });
-		  }/*,
-		  success: function(layero, index){
-			  
-		  }*/
+		  }
 	  });
+  }
+  
+  function del(data){
+	  
+	  var ids = new Array(); 
+	  
+	  $.each(data,function(index,value){
+		  
+		  ids.push(value.id);
+	  })
+	  $.ajax({
+		  type: 'POST',  url: '/api/v1/sys/role/delete/'+ids.join(','), dataType : "json",
+		  success: function(result) { 
+			  if(result.data.status){
+				  layer.msg('删除成功');  tableIns.reload({ page:{ curr: 1 }});
+			  }else{
+				  layer.msg(result.data.message);
+			  }
+		  }
+	  });
+	  
   }
 });
