@@ -43,7 +43,15 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 	@Override
 	public boolean delete(T t) {
 		
-		return false;
+		SqlEntry entry = null;
+		try {
+			entry = getDeleteSql(t);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		int count = jdbcTemplate.update(entry.getSql(), entry.getObj());
+		
+		return count==1? true:false;
 	}
 
 	@Override
@@ -171,7 +179,36 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		return entry;
 	}
 	
-	
+	@SuppressWarnings("unused")
+	private  synchronized  SqlEntry  getDeleteSql(T t) throws InstantiationException, IllegalAccessException {
+		
+		SqlEntry entry = new SqlEntry();
+		
+		StringBuffer buffer = new StringBuffer("delete from "); 
+		
+		Class<? extends Object> clazz = t.getClass();
+		
+		buffer.append(""+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" where ").append(clazz.getAnnotation(TableInfoAnnotation.class).primaryKey()+ "=?" );
+		
+		Field[] fields = clazz.getDeclaredFields();
+		
+		Object primary = null;  List<Object> listField = new ArrayList<>();
+		
+		for (Field field : fields) {
+			
+			field.setAccessible(true);
+			
+			if(field.getName().equals(clazz.getAnnotation(TableInfoAnnotation.class).primaryKey())) {
+				
+				primary = field.get(t);   listField.add(primary);  break;
+			}
+		}
+		entry.setSql(buffer.toString());
+		
+		entry.setObj(listField.toArray(new Object[listField.size()]));
+		
+		return entry;
+	}
 	/*
 	 * public static void main(String[] args) { List<String> list = new
 	 * ArrayList<>();
