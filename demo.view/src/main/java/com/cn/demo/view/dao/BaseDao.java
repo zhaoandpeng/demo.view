@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cn.demo.view.utils.PageHelper;
+
 public interface BaseDao<T, K extends Serializable> {
 
 	T get(Class<T> clazz, K key) throws SQLException ;
@@ -13,8 +15,10 @@ public interface BaseDao<T, K extends Serializable> {
 
 	boolean delete(T t);
 
-//	T get(String key)throws SQLException ;
-	
 	List<T> getList(Class<T> clazz, ConcurrentHashMap<String,Object> map);
+	
+	PageHelper<T> getListPage(Class<T> clazz, ConcurrentHashMap<String,Object> map);
+	
+//	PageHelper<ConcurrentHashMap<String,Object>> getListPage(ConcurrentHashMap<String,Object> map, );
 
 }
