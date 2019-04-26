@@ -2,6 +2,7 @@ package com.cn.demo.view.dao.impl;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.cn.demo.view.annotation.TableInfoAnnotation;
 import com.cn.demo.view.dao.BaseDao;
+import com.cn.demo.view.model.SqlEntry;
 @Component
 public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 
@@ -22,19 +24,14 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 	
 	@Override
 	public boolean saveOrUpdate(T t) {
+		SqlEntry entry = null;
 		try {
-			this.new  SqlUtils().getSaveSql(t);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
+			entry = getSaveSql(t);
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		Jdbc
-//		StringBuffer buffer = new StringBuffer("insert into "+t.getClass().getAnnotation(TableInfoAnnotation.class).tableName()+ "() ");
-//		jdbcTemplate.update(sql, pss)
-		return false;
+		} 
+		int count = jdbcTemplate.update(entry.getSql(), entry.getObj());
+		return count==1? true:false;
 	}
 
 	@Override
@@ -64,56 +61,53 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		return dataList;
 	}
 
-	
-	
-	/*
-	 * private SqlEntity getSaveSql(T t) throws Exception{ SqlEntity sqlEntity = new
-	 * SqlEntity(); sqlEntity.setParams(new ArrayList<Object>()); Field[] fields =
-	 * entityClass.getDeclaredFields(); StringBuffer sql = new StringBuffer("");
-	 * sql.append("insert into ").append(StrUtils.changeName(entityClass.
-	 * getSimpleName())).append(" ( "); int paramLength = 0; for (Field field :
-	 * fields) { StringBuffer methodName = new StringBuffer(""); if(field.getType()
-	 * == boolean.class){ if(field.getName().contains("is")){
-	 * methodName.append(field.getName()); }else{
-	 * methodName.append("is").append(StrUtils.firstCodeToUpperCase(field.getName())
-	 * ); } }else{
-	 * methodName.append("get").append(StrUtils.firstCodeToUpperCase(field.getName()
-	 * )); } Method method = entityClass.getMethod(methodName.toString(), new
-	 * Class[]{}); Object value = method.invoke(t, new Object[]{});
-	 * if(!StrUtils.isEmpty(value)){ if(value instanceof Enum){
-	 * sqlEntity.getParams().add(((Enum) value).ordinal()); }else{
-	 * sqlEntity.getParams().add(value); }
-	 * sql.append("`").append(StrUtils.changeName(field.getName())).append("`").
-	 * append(","); paramLength ++; } } if(sql.indexOf(",") > -1){
-	 * sql.deleteCharAt(sql.length() - 1); } sql.append(") values("); for (int
-	 * i=0;i<paramLength;i++) { sql.append("?,"); } if(sql.indexOf(",") > -1){
-	 * sql.deleteCharAt(sql.length() - 1); } sql.append(")");
-	 * //System.out.println("sql.toString()="+sql.toString());
-	 * sqlEntity.setSql(sql.toString()); return sqlEntity; }
-	 */
-	
-	class SqlUtils {
-
-		private String sql;
+	private  synchronized  SqlEntry  getSaveSql(T t) throws InstantiationException, IllegalAccessException {
 		
-		private Object[] obj;
+		SqlEntry entry = new SqlEntry();
 		
-		public  SqlUtils  getSaveSql(T t) throws InstantiationException, IllegalAccessException {
+		StringBuffer buffer = new StringBuffer("insert into "); 
+		
+		Class<? extends Object> clazz = t.getClass();
+		
+		buffer.append(""+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" values(");
+		
+		Field[] fields = clazz.getDeclaredFields();
+		
+		List<Object> listField = new ArrayList<>();
+		
+		int i = 0;
+		
+		for (Field field : fields) {
 			
-			Class<? extends Object> clazz = t.getClass();
+			i++;
 			
-			Field[] fields = clazz.getDeclaredFields();
+			field.setAccessible(true);
 			
-			for (Field field : fields) {
+			if(field.getName().indexOf("serialVersionUID")!=-1) {
 				
-				System.out.println(field.getName()+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+				continue;
 			}
 			
+			System.out.println(field.getName()+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 			
-			System.out.println();
+			Object val = new Object();
 			
+			val = field.get(t);
 			
-			return null;
+			if(fields.length==i) {
+				buffer.append("?");
+			}else {
+				buffer.append("?,");
+			}
+			
+			listField.add(val);
 		}
+		buffer.append(")");
+		
+		entry.setSql(buffer.toString());
+		
+		entry.setObj(listField.toArray(new Object[listField.size()]));
+		
+		return entry;
 	}
 }
