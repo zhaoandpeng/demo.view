@@ -13,7 +13,8 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 	    page: true ,
 	    cols: [[ 
 	    	{checkbox: true,fixed: 'left'},
-	    	{field: 'roleName', title: '角色名称', width:150, align: 'center'}
+	    	{field: 'roleName', title: '角色名称', width:150, align: 'center'},
+	    	{fixed: 'right', title: '操作', width: 165, align:'center', toolbar: '#rowBar'}
 	    ]],
 	    done : function(){
 	        
@@ -34,6 +35,44 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 	  			case 'modify': if(data.length === 0){ layer.msg('请选择一项数据'); } else if(data.length > 1){ layer.msg('只允许单条编辑')}else{modify()} break;
 	  			case 'delete': if(data.length === 0){ layer.msg('请选择一行'); } else { del(data) } break;
 	  	};
+  });
+  
+  table.on('tool(operate)', function(obj){
+	  var row = obj.data  ,layEvent = obj.event;
+	  
+	  $.post('/', {}, function(str){
+		  layer.open({
+			  type: 1,
+			  content: str //注意，如果str是object，那么需要字符拼接。
+		  });
+	  });
+	  
+	  
+	  /*var authorization = layer.open({ 
+		  type: 1, title:"权限树",
+		  resize : false,
+		  btn: ['保存', '取消', ],
+		  btnAlign: 'c',
+		  area: ['350px', '600px'],
+		  skin: 'demo-class',
+		  content: $('#add_form'),
+		  yes:function(index,layero){
+			  var roleName = $("input[name='roleName']").val();
+			  $.ajax({
+				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName},
+				  success: function(result) { 
+					  if(result.data.status){
+						  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
+					  }else{
+						  layer.msg(result.data.message);
+					  }
+				  }
+			  });
+		  }
+	  });*/
+	  
+	  
+	  
   });
   
   exports('base_role', function(){ }); 

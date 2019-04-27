@@ -19,6 +19,9 @@
 		<button  class="layui-btn layui-btn-sm" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</button>
 	</div>
 
+	<div id="rowBar" class="layui-hide" >
+		<button  class="layui-btn layui-btn-sm layui-btn-warm" lay-event="authorization"><i class="layui-icon">&#xe642;</i>权限分配</button>
+	</div>
 <script type="text/javascript">
 	
 	layui.config({base:'/layui.extend/modules/system/'}).use('base_role', function(){
