@@ -1,7 +1,7 @@
-layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
+layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function(exports){ // ,  ztree = ztree   
   
 	
-  var layer = layui.layer, element = layui.element, $ = layui.jquery,  table = layui.table, form = layui.form ;
+  var layer = layui.layer, element = layui.element, $ = layui.jquery,  table = layui.table,  form = layui.form,  zTreeObj; 
   
   var tableIns = table.render({
 	  	id:'mainData',
@@ -38,26 +38,67 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
   });
   
   table.on('tool(operate)', function(obj){
+	  
 	  var row = obj.data  ,layEvent = obj.event;
 	  
-	  $.post('/', {}, function(str){
-		  layer.open({
-			  type: 1,
-			  content: str //注意，如果str是object，那么需要字符拼接。
-		  });
+	  $.ajax({
+		  
+		  type: 'POST',
+		  
+		  url: '/api/v1/sys/menu/index/data',
+		  
+		  data: {'id':row.id},
+		  
+		  dataType: 'json',
+		  
+		  success: function(data){
+			  
+			  if(data.data.length>0){
+				  
+				  init_tree(data.data)
+			  }
+		  }
 	  });
-	  
-	  
-	  /*var authorization = layer.open({ 
+  });
+  
+  function init_tree(data){
+
+	  var setting = {
+			  view: {
+				  showLine: true,
+				  fontCss:{'color':'black','font-weight':'bold'},
+				  selectedMulti: true 
+			  },
+			  check:{
+//				  chkboxType: { "Y": "", "N": "" },
+				  chkStyle: "checkbox",
+				  enable: true 
+			  },
+			  data: {
+				  simpleData: {
+					  enable:true,
+					  idKey: "id",
+					  pIdKey: "pId",
+					  rootPId: null,
+				  }
+			  }/*,
+			  callback: {
+				  beforeExpand:zTreeBeforeExpand, // 用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作
+			  }*/
+	  };
+
+	  zTreeObj = layui.zTree.init($("#authorization_tree"), setting, data);
+
+	  var authorization = layer.open({
 		  type: 1, title:"权限树",
 		  resize : false,
-		  btn: ['保存', '取消', ],
+		  btn: [ '保存', '取消', ],
 		  btnAlign: 'c',
 		  area: ['350px', '600px'],
 		  skin: 'demo-class',
-		  content: $('#add_form'),
+		  content: $('#authorization_tree'),
 		  yes:function(index,layero){
-			  var roleName = $("input[name='roleName']").val();
+			  /* var roleName = $("input[name='roleName']").val();
 			  $.ajax({
 				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName},
 				  success: function(result) { 
@@ -67,13 +108,17 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 						  layer.msg(result.data.message);
 					  }
 				  }
-			  });
-		  }
-	  });*/
-	  
-	  
-	  
-  });
+			  });*/
+		  },
+		  btn2: function(index, layero){
+			  $('#authorization_tree').empty();
+		  },
+		  cancel: function(index, layero){ 
+			  $('#authorization_tree').empty();
+		  }   
+	  });
+  }
+  
   
   exports('base_role', function(){ }); 
   
@@ -155,4 +200,7 @@ layui.define(['layer', 'element', 'jquery', 'table', 'form'], function(exports){
 	  });
 	  
   }
-});
+}).extend({zTree: '../ztree/jquery.ztree.core'});
+
+
+

@@ -7,6 +7,7 @@
 <title>角色管理</title>
 <link rel="stylesheet" type="text/css" href="../../../../layui/css/layui.css">
 <link rel="stylesheet" type="text/css" href="../../../../css/main.css">
+<link rel="stylesheet" type="text/css" href="../../../../css/zTreeStyle.css">
 <script type="text/javascript" src="../../../../layui/layui.js"></script>
 </head>
 <body class="layui-layout-body">
@@ -21,6 +22,10 @@
 
 	<div id="rowBar" class="layui-hide" >
 		<button  class="layui-btn layui-btn-sm layui-btn-warm" lay-event="authorization"><i class="layui-icon">&#xe642;</i>权限分配</button>
+	</div>
+	
+	<div class="authorization_area"><!-- style="display: none" -->
+   	 	<ul id="authorization_tree" class="ztree "></ul>
 	</div>
 <script type="text/javascript">
 	
@@ -48,6 +53,5 @@
     </div>
   </div>
 </form>
-
 
 </html>
