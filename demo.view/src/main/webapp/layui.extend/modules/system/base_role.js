@@ -1,4 +1,4 @@
-layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function(exports){ // ,  ztree = ztree   
+layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function(exports){  
   
 	
   var layer = layui.layer, element = layui.element, $ = layui.jquery,  table = layui.table,  form = layui.form,  zTreeObj; 
@@ -55,13 +55,13 @@ layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function
 			  
 			  if(data.data.length>0){
 				  
-				  init_tree(data.data)
+				  init_tree(data.data,row)
 			  }
 		  }
 	  });
   });
   
-  function init_tree(data){
+  function init_tree(data, row){
 
 	  var setting = {
 			  view: {
@@ -70,7 +70,6 @@ layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function
 				  selectedMulti: true 
 			  },
 			  check:{
-//				  chkboxType: { "Y": "", "N": "" },
 				  chkStyle: "checkbox",
 				  enable: true 
 			  },
@@ -81,10 +80,7 @@ layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function
 					  pIdKey: "pId",
 					  rootPId: null,
 				  }
-			  }/*,
-			  callback: {
-				  beforeExpand:zTreeBeforeExpand, // 用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作
-			  }*/
+			  }
 	  };
 
 	  zTreeObj = layui.zTree.init($("#authorization_tree"), setting, data);
@@ -98,17 +94,38 @@ layui.define(['layer', 'element', 'jquery',  'zTree', 'table', 'form'], function
 		  skin: 'demo-class',
 		  content: $('#authorization_tree'),
 		  yes:function(index,layero){
-			  /* var roleName = $("input[name='roleName']").val();
-			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName},
-				  success: function(result) { 
+			 
+			 var id = row.id, checkNode = zTreeObj.getCheckedNodes(true), menus = new Array(); //获取选中的CHECKBOX选项&&获取当前选中行的角色主键
+			 
+			 $.each(checkNode,function(index,value){
+				 
+				 if(value.id=="0"){return true;}
+				 
+				 menus.push(value.id);
+			 })
+				
+			 $.ajax({
+				  
+				  type: 'POST',
+				  
+				  url: '/api/v1/sys/role/resources/update',
+				  
+				  data: {'roleId':id, 'menus':menus.join()},
+				  
+				  dataType: 'json',
+				  
+				  success: function(result){
+					  
 					  if(result.data.status){
-						  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
+						  
+						  layer.msg('权限分配成功'); layer.close(authorization);
+						  $('#authorization_tree').empty();
 					  }else{
 						  layer.msg(result.data.message);
 					  }
 				  }
-			  });*/
+			  });
+			 
 		  },
 		  btn2: function(index, layero){
 			  $('#authorization_tree').empty();
