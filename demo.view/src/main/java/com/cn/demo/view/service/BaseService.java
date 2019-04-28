@@ -18,4 +18,7 @@ public interface BaseService<T, K extends Serializable> {
 	
 	
 	public abstract List<T> getList(Class<T> clazz,ConcurrentHashMap<String,Object> map);
+	
+	
+	public abstract int deleteBatch(final List<T> list, ConcurrentHashMap<String,Object> map);
  }

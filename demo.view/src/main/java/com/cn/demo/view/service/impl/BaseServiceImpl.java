@@ -43,4 +43,10 @@ public class BaseServiceImpl<T, K> implements BaseService<T,java.lang.String>{
 		return baseDao.getList(clazz, map);
 	}
 
+	@Override
+	public int deleteBatch(List<T> list,ConcurrentHashMap<String,Object> map) {
+	
+		return baseDao.deleteBatch(list,map);
+	}
+
 }

@@ -14,6 +14,8 @@ public interface BaseDao<T, K extends Serializable> {
 	boolean saveOrUpdate(T t, K key);
 
 	boolean delete(T t);
+	
+	int deleteBatch(final List<T> list, ConcurrentHashMap<String,Object> map);
 
 	List<T> getList(Class<T> clazz, ConcurrentHashMap<String,Object> map);
 	
