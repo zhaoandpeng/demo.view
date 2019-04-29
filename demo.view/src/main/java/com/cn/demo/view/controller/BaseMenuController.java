@@ -22,9 +22,26 @@ public class BaseMenuController extends BaseController{
 	@Resource
 	private BaseMenuService baseMenuService;
 	
+	
+	@RequestMapping(value = "/index")
+	public String index() {
+		
+		return "system/menu/index";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/index/view")
+	public String index_view() {
+		
+		List<BaseMenu> list = baseMenuService.getList(BaseMenu.class, null);
+		
+		return toJson(list,list.size());
+	}
+	
+	
 	@ResponseBody
 	@RequestMapping("/index/data")
-	public String index_view() {
+	public String index_data() {
 		
 		List<BaseMenu> userResource = getCurrentBaseUser().getRoleResources();
 		
