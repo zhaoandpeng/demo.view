@@ -2,7 +2,6 @@ package com.cn.demo.view.controller;
 
 import javax.annotation.Resource;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,7 @@ import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.service.BaseRoleService;
 
 @Controller
-public class LoginController{
+public class LoginController extends BaseController{
 
 	
 	@Resource
@@ -29,7 +28,7 @@ public class LoginController{
 	@RequestMapping(value="/main/data")
 	public BaseUser home() {
 		
-		BaseUser user = (BaseUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		BaseUser user = getCurrentBaseUser();
 		
 		return user;
 	}

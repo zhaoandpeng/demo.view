@@ -1,5 +1,6 @@
 package com.cn.demo.view.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,6 +26,12 @@ public class BaseMenuController extends BaseController{
 	@RequestMapping("/index/data")
 	public String index_view() {
 		
+		List<BaseMenu> userResource = getCurrentBaseUser().getRoleResources();
+		
+		List<String> menusListId = new ArrayList<String>();
+		
+		userResource.stream().forEach(model -> menusListId.add(model.getId()));
+		
 		List<BaseMenu> list = baseMenuService.getList(BaseMenu.class, null);
 		
 		JSONArray ztree = new JSONArray();  JSONObject rootNode = new JSONObject();
@@ -48,10 +55,16 @@ public class BaseMenuController extends BaseController{
 				JSONObject node = new JSONObject();
 				
 				node.put("id", model.getId());
-			    
+				
 				node.put("pId", model.getPid());
-			    
+				
 				node.put("name", model.getMenuName());
+				
+				if(menusListId.contains(model.getId())) {
+					
+					node.put("checked", true);
+				}
+				
 				
 				ztree.add(node);
 			}

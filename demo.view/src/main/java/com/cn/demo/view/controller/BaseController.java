@@ -4,8 +4,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.cn.demo.view.model.BaseUser;
 
 import net.sf.json.JSONObject;
 
@@ -43,6 +46,13 @@ public class BaseController {
 		
 		return JSONObject.fromObject(dataMap).toString();
 		
+	}
+	
+	public BaseUser getCurrentBaseUser() {
+		
+		BaseUser user = (BaseUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		return user;
 	}
 	
 }

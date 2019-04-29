@@ -33,7 +33,7 @@ public class BaseRoleController extends BaseController{
 	}
 	
 	@ResponseBody
-	@RequestMapping("/index/data")
+	@RequestMapping(value = "/index/data")
 	public String index_view() {
 		
 		List<BaseRole> list = baseRoleService.getList(BaseRole.class, null);
@@ -42,7 +42,7 @@ public class BaseRoleController extends BaseController{
 	}
 	
 	@ResponseBody
-	@RequestMapping("/add_or_update")
+	@RequestMapping(value = "/add_or_update")
 	public String add_or_update() throws SQLException {
 		
 		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
@@ -110,7 +110,7 @@ public class BaseRoleController extends BaseController{
 	}
 	
 	@ResponseBody
-	@RequestMapping("/delete/{id}")
+	@RequestMapping(value = "/delete/{id}")
 	public String delete(@PathVariable("id") String id) throws SQLException {
 		
 		ConcurrentHashMap<String,Object> resultMap = new ConcurrentHashMap<>();
