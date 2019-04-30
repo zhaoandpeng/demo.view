@@ -26,7 +26,7 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
   });
   
   iconPicker.render({
-      elem: '#iconPicker',// 选择器，推荐使用input
+      elem: '#iconPicker_add',// 选择器，推荐使用input
       type: 'fontClass',// 数据类型：fontClass/unicode，推荐使用fontClass
 //    search: true,// 是否开启搜索：true/false，默认true
       page: true,// 是否开启分页：true/false，默认true
@@ -36,8 +36,27 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
       }*/
   });
   
+  iconPicker.render({
+	  elem: '#iconPicker_modify',// 选择器，推荐使用input
+	  type: 'fontClass',// 数据类型：fontClass/unicode，推荐使用fontClass
+//    search: true,// 是否开启搜索：true/false，默认true
+	  page: true,// 是否开启分页：true/false，默认true
+	  limit: 20// 每页显示数量，默认12
+	  /*click: function (data) {
+          $('#add_form input[name="orderNo"]').val(data.icon);
+      }*/
+  });
+  
   slider.render({
-	  elem: '#slideOrderNo',
+	  elem: '#slideOrderNo_add',
+	  value: 0, //初始值
+	  max:100,
+	  input: true, //输入框
+	  theme: '#FF5722'
+  });
+  
+  slider.render({
+	  elem: '#slideOrderNo_modify',
 	  value: 0, //初始值
 	  max:100,
 	  input: true, //输入框
@@ -49,16 +68,10 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 	  	var checkStatus = table.checkStatus(obj.config.id) ,data = checkStatus.data; 
 	  	switch(obj.event){
 	  			case 'add': add(); break;
-	  			case 'modify': if(data.length === 0){ layer.msg('请选择一项数据'); } else if(data.length > 1){ layer.msg('只允许单条编辑')}else{modify()} break;
+	  			case 'modify': if(data.length === 0){ layer.msg('请选择一项数据'); } else if(data.length > 1){ layer.msg('只允许单条编辑')}else{modify(data)} break;
 	  			case 'delete': if(data.length === 0){ layer.msg('请选择一行'); } else { del(data) } break;
 	  	};
   });
-  
-  form.on('submit(addformfilter)', function(data){
-	  alert(data.orderNo)
-	  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-  });
-  
   
   /*table.on('tool(operate)', function(obj){
 	  
@@ -159,7 +172,6 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 	  });
   }*/
   
-  
   exports('base_menu', function(){ }); 
   
   function add(){
@@ -174,20 +186,70 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 		  skin: 'demo-class',
 		  content: $('#add_form'),
 		  yes:function(index,layero){
+			  
 			  var orderNo = $(".demo-slider .layui-slider-input .layui-slider-input-txt .layui-input").val();
+			 
 			  $('#add_form input[name="orderNo"]').val(orderNo);
-			  $("#add_form").submit();
-			  /*var roleName = $("input[name='roleName']").val();
+			  
+			  $("#add_form_submit").trigger("click");
+		  },
+		  success:function(){
 			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName},
+				  type: 'POST',  url: '/api/v1/sys/menu/index/view', dataType : "json",
+				  success: function(result) { 
+					  if(result.data.length>0){
+						  $.each(result.data,function(index,value){
+							  var option =new Option(value.menuName,value.id);
+							  $('[name="pid"]').append(option);
+							  form.render();
+						  })
+					  }
+				  }
+			  });
+			  
+			  $(".layui-slider-input").css('margin-top','15px')
+		  }
+	  });
+	  
+	  form.on('submit(addform)', function(data){
+		  $.ajax({
+			  type: 'POST',  url: '/api/v1/sys/menu/add_or_update', dataType : "json", data: data.field,
+			  success: function(result) { 
+				  if(result.data.status){
+					  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
+				  }else{
+					  layer.msg('保存失败['+result.data.message+']');
+				  }
+			  }
+		  });
+		  return false;
+	  });
+  }
+  
+  function modify(data){
+	  
+	  form.val('modify_form', data[0]);
+	 
+	  var modify = layer.open({ 
+		  type: 1, title:"修改菜单",
+		  resize : false,
+		  btn: [  '保存', '取消', ],
+		  btnAlign: 'c',
+		  area: ['650px', '480px'],
+		  skin: 'demo-class',
+		  content: $('#modify_form'),
+		  yes:function(index,layero){
+			  var roleName = $("#modify_form input[name='roleName']").val();
+			  $.ajax({
+				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName, "id":id},
 				  success: function(result) { 
 					  if(result.data.status){
-						  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
+						  layer.msg('修改成功'); layer.close(modify);  tableIns.reload({ page:{ curr: 1 }});
 					  }else{
 						  layer.msg(result.data.message);
 					  }
 				  }
-			  });*/
+			  });
 		  },
 		  success:function(){
 			  $.ajax({
@@ -208,39 +270,7 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 	  });
   }
   
-  /*function modify(){
-	  
-	  var roleName = checkRow()[0].roleName;
-	  
-	  var id = checkRow()[0].id;
-	  
-	  $("#modify_form input[name='roleName']").val(roleName);
-	 
-	  var modify = layer.open({ 
-		  type: 1, title:"修改角色",
-		  resize : false,
-		  btn: [  '保存', '取消', ],
-		  btnAlign: 'c',
-		  area: ['350px', '200px'],
-		  skin: 'demo-class',
-		  content: $('#modify_form'),
-		  yes:function(index,layero){
-			  var roleName = $("#modify_form input[name='roleName']").val();
-			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/role/add_or_update', dataType : "json", data: {"roleName":roleName, "id":id},
-				  success: function(result) { 
-					  if(result.data.status){
-						  layer.msg('修改成功'); layer.close(modify);  tableIns.reload({ page:{ curr: 1 }});
-					  }else{
-						  layer.msg(result.data.message);
-					  }
-				  }
-			  });
-		  }
-	  });
-  }
-  
-  function del(data){
+  /*function del(data){
 	  
 	  var ids = new Array(); 
 	  
