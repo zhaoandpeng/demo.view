@@ -1,7 +1,11 @@
 package com.cn.demo.view.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -10,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cn.demo.view.model.BaseMenu;
+import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.service.BaseMenuService;
+import com.cn.demo.view.utils.EventType;
 
+import io.netty.util.internal.StringUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -89,5 +96,43 @@ public class BaseMenuController extends BaseController{
 		return toJson(ztree);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/add_or_update")
+	public String add_or_update() throws SQLException {
+		boolean global = false;
+		ConcurrentHashMap<String,Object> resultMap = new ConcurrentHashMap<>();
+		String id = getRequest().getParameter("id");
+		String menuName = getRequest().getParameter("menuName");
+		String menuUrl = getRequest().getParameter("menuUrl");
+		String menuIcon = getRequest().getParameter("menuIcon");
+		String pid = getRequest().getParameter("pid");
+		String orderNo = getRequest().getParameter("orderNo");
+		if(!StringUtil.isNullOrEmpty(id)) {
+			BaseMenu model = baseMenuService.get(BaseMenu.class, id);
+			if(null!=model) {
+				model.setPid(pid);
+				model.setMenuName(menuName);
+				model.setMenuUrl(menuUrl);
+				model.setMenuIcon(menuIcon);
+				model.setOrderNo(Integer.parseInt(orderNo));
+				global = this.baseMenuService.saveOrUpdate(model,EventType.EVENT_UPDATE);//执行更新操作
+			}
+		}else {
+			BaseUser user = getCurrentBaseUser();
+			BaseMenu model = new BaseMenu();
+			model.setId(UUID.randomUUID().toString());
+			model.setPid(pid);
+			model.setMenuName(menuName);
+			model.setMenuUrl(menuUrl);
+			model.setMenuIcon(menuIcon);
+			model.setOrderNo(Integer.parseInt(orderNo));
+			model.setCreateDate(new Date());
+			model.setCreatorId(user.getId());
+			model.setCreatorName(user.getUsername());
+			global = this.baseMenuService.saveOrUpdate(model,EventType.EVENT_ADD);//执行新增操作
+		}
+		resultMap.put("status", global);
+		return toJson(resultMap);
+	}
 	
 }

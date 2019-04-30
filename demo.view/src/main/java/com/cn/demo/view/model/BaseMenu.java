@@ -22,7 +22,7 @@ public class BaseMenu implements Serializable{
 
 	private String id;  //主键
 
-    private Integer pid; //父级主键
+    private String pid; //父级主键
 
     private String menuName; //菜单名称
 
@@ -32,7 +32,7 @@ public class BaseMenu implements Serializable{
 
     private Integer orderNo; //排序号
 
-    private Integer creatorId; //创建人主键
+    private String creatorId; //创建人主键
 
     private String creatorName; //创建人名称
 
@@ -46,11 +46,11 @@ public class BaseMenu implements Serializable{
         this.id = id == null ? null : id.trim();
     }
 
-    public Integer getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(Integer pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
@@ -86,11 +86,11 @@ public class BaseMenu implements Serializable{
         this.orderNo = orderNo;
     }
 
-    public Integer getCreatorId() {
+    public String getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(Integer creatorId) {
+    public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
     }
 
