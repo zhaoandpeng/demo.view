@@ -187,7 +187,7 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 				continue;
 			}
 			
-			if(field.getName().indexOf(clazz.getAnnotation(TableInfoAnnotation.class).primaryKey())!=-1) {
+			if(field.getName().equals(clazz.getAnnotation(TableInfoAnnotation.class).primaryKey())) {
 				
 				primary = field.get(t);
 				
@@ -200,7 +200,7 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 			
 			val = field.get(t);
 			
-			if(fields.length==i) { buffer.append(field.getName()+"=?"); }else { buffer.append(field.getName()+"?,"); }
+			if(fields.length==i) { buffer.append(field.getName()+"=?"); }else { buffer.append(field.getName()+" = ?,"); }
 			
 			listField.add(val);
 		}
@@ -217,7 +217,6 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		return entry;
 	}
 	
-	@SuppressWarnings("unused")
 	private  synchronized  SqlEntry  getDeleteSql(T t) throws InstantiationException, IllegalAccessException {
 		
 		SqlEntry entry = new SqlEntry();

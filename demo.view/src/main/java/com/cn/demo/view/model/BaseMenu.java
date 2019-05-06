@@ -8,11 +8,11 @@ import com.cn.demo.view.annotation.TableInfoAnnotation;
 /**
  * 
  * 
- * @author wcyong
+ * @author mr.zhao
  * 
  * @date 2019-04-23
  */
-@TableInfoAnnotation(tableName = "base_menu", primaryKey = "id")
+@TableInfoAnnotation(tableName = "base_menu", primaryKey = "ID")
 public class BaseMenu implements Serializable{
     
 	/**
@@ -20,93 +20,93 @@ public class BaseMenu implements Serializable{
 	 */
 	private static final long serialVersionUID = -2077714120763534169L;
 
-	private String id;  //主键
+    private String ID; //主键
 
-    private String pid; //父级主键
+    private String PID;//父级主键
 
-    private String menuName; //菜单名称
+    private String MENU_NAME;//菜单名称
 
-    private String menuUrl; //菜单链接
+    private String MENU_URL;//菜单链接
 
-    private String menuIcon; //菜单图标
+    private String MENU_ICON;//菜单图标
 
-    private Integer orderNo; //排序号
+    private Integer ORDER_NO;//排序号
 
-    private String creatorId; //创建人主键
+    private String CREATOR_ID;//创建人主键
 
-    private String creatorName; //创建人名称
+    private String CREATOR_NAME;//创建人名称
 
-    private Date createDate; //创建日期
+    private Date CREATE_DATE;//创建日期
 
-    public String getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setID(String ID) {
+        this.ID = ID == null ? null : ID.trim();
     }
 
-    public String getPid() {
-        return pid;
+    public String getPID() {
+        return PID;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public void setPID(String PID) {
+        this.PID = PID == null ? null : PID.trim();
     }
 
-    public String getMenuName() {
-        return menuName;
+    public String getMENU_NAME() {
+        return MENU_NAME;
     }
 
-    public void setMenuName(String menuName) {
-        this.menuName = menuName == null ? null : menuName.trim();
+    public void setMENU_NAME(String MENU_NAME) {
+        this.MENU_NAME = MENU_NAME == null ? null : MENU_NAME.trim();
     }
 
-    public String getMenuUrl() {
-        return menuUrl;
+    public String getMENU_URL() {
+        return MENU_URL;
     }
 
-    public void setMenuUrl(String menuUrl) {
-        this.menuUrl = menuUrl == null ? null : menuUrl.trim();
+    public void setMENU_URL(String MENU_URL) {
+        this.MENU_URL = MENU_URL == null ? null : MENU_URL.trim();
     }
 
-    public String getMenuIcon() {
-        return menuIcon;
+    public String getMENU_ICON() {
+        return MENU_ICON;
     }
 
-    public void setMenuIcon(String menuIcon) {
-        this.menuIcon = menuIcon == null ? null : menuIcon.trim();
+    public void setMENU_ICON(String MENU_ICON) {
+        this.MENU_ICON = MENU_ICON == null ? null : MENU_ICON.trim();
     }
 
-    public Integer getOrderNo() {
-        return orderNo;
+    public Integer getORDER_NO() {
+        return ORDER_NO;
     }
 
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
+    public void setORDER_NO(Integer ORDER_NO) {
+        this.ORDER_NO = ORDER_NO;
     }
 
-    public String getCreatorId() {
-        return creatorId;
+    public String getCREATOR_ID() {
+        return CREATOR_ID;
     }
 
-    public void setCreatorId(String creatorId) {
-        this.creatorId = creatorId;
+    public void setCREATOR_ID(String CREATOR_ID) {
+        this.CREATOR_ID = CREATOR_ID == null ? null : CREATOR_ID.trim();
     }
 
-    public String getCreatorName() {
-        return creatorName;
+    public String getCREATOR_NAME() {
+        return CREATOR_NAME;
     }
 
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName == null ? null : creatorName.trim();
+    public void setCREATOR_NAME(String CREATOR_NAME) {
+        this.CREATOR_NAME = CREATOR_NAME == null ? null : CREATOR_NAME.trim();
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCREATE_DATE() {
+        return CREATE_DATE;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCREATE_DATE(Date CREATE_DATE) {
+        this.CREATE_DATE = CREATE_DATE;
     }
 }
