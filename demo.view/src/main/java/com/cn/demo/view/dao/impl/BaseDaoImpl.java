@@ -18,6 +18,8 @@ import com.cn.demo.view.dao.BaseDao;
 import com.cn.demo.view.model.SqlEntry;
 import com.cn.demo.view.utils.EventType;
 import com.cn.demo.view.utils.PageHelper;
+
+import io.netty.util.internal.StringUtil;
 @Component
 public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 
@@ -259,7 +261,8 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 	 */
 
 	@Override
-	public PageHelper<T> getListPage(Class<T> clazz, ConcurrentHashMap<String, Object> map) {
+	@SuppressWarnings("static-access")
+	public PageHelper<T> getListObjectPage(Class<T> clazz, ConcurrentHashMap<String, Object> map, PageHelper<T> pageModel ) {
 		
 		StringBuffer buffer = new StringBuffer("select count(*) from "+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" where 1 = 1 ");
 		
@@ -275,8 +278,70 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		
 		if(0==count) {
 			
-			return new PageHelper<>();
+			return pageModel;
 		}
-		return null;
+		
+		pageModel.setTotalPage(count%pageModel.getPageSize()==0?count/pageModel.getPageSize():count/pageModel.getPageSize()+1);//页数
+		
+		pageModel.setTotalCount(count);
+		
+		StringBuffer sql = new StringBuffer("select * from "+clazz.getAnnotation(TableInfoAnnotation.class).tableName()+" where 1 = 1 ");
+		
+		if(null!= map&&!map.isEmpty()) {
+			
+			for (Map.Entry<String, Object>  entry  : map.entrySet()) {
+				
+				sql.append(" and "+entry.getKey()+"='"+entry.getValue().toString()+"'");
+			}
+		}
+		
+		if(StringUtil.isNullOrEmpty(pageModel.getOrderBy())) {
+			
+			sql.append(" order by ").append(clazz.getAnnotation(TableInfoAnnotation.class).primaryKey()).append(" "+pageModel.DESC);
+		}else {
+			
+			sql.append(" order by ").append(pageModel.getOrderBy()).append(" "+pageModel.DESC);
+		}
+		
+		sql.append(" limit ").append((pageModel.getPageNo()-1)*pageModel.getPageSize()+" , "+pageModel.getPageSize());
+		
+		List<T> dataList = jdbcTemplate.query(sql.toString(), new Object[]{}, new BeanPropertyRowMapper<T>(clazz));
+		
+		pageModel.setResult(dataList);
+		
+		return pageModel;
+	}
+	
+	@Override
+	@SuppressWarnings({ "static-access", "unchecked" })
+	public PageHelper<T> getListMapPage(StringBuffer sql, PageHelper<T> pageModel ) {
+		
+		StringBuffer buffer = new StringBuffer("select count(*) from ("+sql+") c");
+		
+		int count = jdbcTemplate.queryForObject(buffer.toString(), new Object[]{}, Integer.class);
+		
+		if(0==count) {
+			
+			return pageModel;
+		}
+		
+		pageModel.setTotalPage(count%pageModel.getPageSize()==0?count/pageModel.getPageSize():count/pageModel.getPageSize()+1);//页数
+		
+		pageModel.setTotalCount(count);
+		
+		StringBuffer executeSql = new StringBuffer( "select * from ("+sql+") c " );
+		
+		if(!StringUtil.isNullOrEmpty(pageModel.getOrderBy())) {
+			
+			executeSql.append("order by "+pageModel.getOrderBy()+" ").append(pageModel.DESC);
+		}
+		
+		executeSql.append(" limit ").append((pageModel.getPageNo()-1)*pageModel.getPageSize()+" , "+pageModel.getPageSize());;
+		
+		List<T> dataList = (List<T>) jdbcTemplate.queryForList(executeSql.toString());
+		
+		pageModel.setResult(dataList);
+		
+		return pageModel;
 	}
 }

@@ -19,8 +19,8 @@ public interface BaseDao<T, K extends Serializable> {
 
 	List<T> getList(Class<T> clazz, ConcurrentHashMap<String,Object> map);
 	
-	PageHelper<T> getListPage(Class<T> clazz, ConcurrentHashMap<String,Object> map);
+	PageHelper<T> getListObjectPage(Class<T> clazz, ConcurrentHashMap<String,Object> map, PageHelper<T> pageModel );
 	
-//	PageHelper<ConcurrentHashMap<String,Object>> getListPage(ConcurrentHashMap<String,Object> map, );
-
+	PageHelper<T> getListMapPage(StringBuffer sql, PageHelper<T> pageModel );
+	
 }
