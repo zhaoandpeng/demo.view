@@ -13,7 +13,9 @@ public class PageHelper<T> implements Serializable{
 	
 	protected int pageNo = 1; //页码
 	
-	protected int pageSize = 1; //每页条数
+	protected int pageSize = 10; //每页条数
+	
+	protected int totalPage = 0; //每页条数
 	
 	protected String orderBy = null; //排序字段
 	
@@ -69,6 +71,14 @@ public class PageHelper<T> implements Serializable{
 
 	public void setTotalCount(long totalCount) {
 		this.totalCount = totalCount;
+	}
+
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
 	}
 	
 }

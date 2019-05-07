@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.cn.demo.view.dao.BaseDao;
 import com.cn.demo.view.service.BaseService;
+import com.cn.demo.view.utils.PageHelper;
 @Service
 public class BaseServiceImpl<T, K> implements BaseService<T,java.lang.String>{
 
@@ -47,6 +48,12 @@ public class BaseServiceImpl<T, K> implements BaseService<T,java.lang.String>{
 	public int deleteBatch(List<T> list,ConcurrentHashMap<String,Object> map) {
 	
 		return baseDao.deleteBatch(list,map);
+	}
+
+	@Override
+	public PageHelper<T> getListObjectPage(Class<T> clazz, ConcurrentHashMap<String, Object> map, PageHelper<T> pageModel) {
+		
+		return baseDao.getListObjectPage(clazz, map, pageModel);
 	}
 
 }

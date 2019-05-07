@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cn.demo.view.utils.PageHelper;
+
 public interface BaseService<T, K extends Serializable> {
 
 	
@@ -20,5 +22,10 @@ public interface BaseService<T, K extends Serializable> {
 	public abstract List<T> getList(Class<T> clazz,ConcurrentHashMap<String,Object> map);
 	
 	
+	public abstract PageHelper<T> getListObjectPage(Class<T> clazz, ConcurrentHashMap<String, Object> map, PageHelper<T> pageModel );
+	
+	
 	public abstract int deleteBatch(final List<T> list, ConcurrentHashMap<String,Object> map);
+	
+	
  }
