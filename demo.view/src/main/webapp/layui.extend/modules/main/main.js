@@ -5,7 +5,7 @@ layui.define(['layer', 'element', 'jquery'], function(exports){
   
   function append_html(obj){
 	  
-	  return "<a href=\"javascript:;\" onclick=\"addTab('" + obj.menuName + "','" + obj.menuUrl + "')\" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + obj.menuName + "</a>";
+	  return "<a href=\"javascript:;\" onclick=\"addTab('" + obj.menu_NAME + "','" + obj.menu_URL + "')\" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + obj.menu_NAME + "</a>";
   }
   
   function checkLastItem(arr, i) {
@@ -31,9 +31,9 @@ layui.define(['layer', 'element', 'jquery'], function(exports){
 						
 					  	var strli = "<li class=\"layui-nav-item lay-unselect \" >";
 						
-						if (res[i].menuUrl =='#'){
+						if (res[i].menu_URL =='#'){
 							
-							strli = strli + "<a href=\"javascript:;\"><i class=\"layui-icon layui-icon-set\"></i>&nbsp;&nbsp;&nbsp;" + res[i].menuName + "</a>";
+							strli = strli + "<a href=\"javascript:;\"><i class=\"layui-icon layui-icon-set\"></i>&nbsp;&nbsp;&nbsp;" + res[i].menu_NAME + "</a>";
 						}else{
 							
 							strli = strli + append_html(res[i]);

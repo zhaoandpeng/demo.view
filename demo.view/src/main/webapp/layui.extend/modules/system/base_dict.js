@@ -13,13 +13,14 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
 	    page: true ,
 	    cols: [[ 
 	    	{checkbox: true,fixed: 'left'},
-	    	{field: 'ID', title: '主键', width:300, align: 'center'},
-	    	{field: 'PID', title: '父级', width:300, align: 'center'},
-	    	{field: 'ITEM_CODE', title: '选项名称', width:150, align: 'center'},
+	    	{field: 'ID', title: '主键', width:300, align: 'center',hide:true},
+	    	{field: 'PID', title: '父级', width:300, align: 'center',hide:true},
+	    	{field: 'PARENT_ITEM_CODE', title: '父级选项码', width:180, align: 'center'},
+	    	{field: 'ITEM_CODE', title: '选项码', width:180, align: 'center'},
 	    	{field: 'ITEM_NAME', title: '选项名称', width:150, align: 'center'},
 	    	{field: 'ITEM_VALUE', title: '选项值', width:150, align: 'center'},
-	    	{field: 'STATUS', title: '选项状态', width:150, align: 'center'},
-	    	{field: 'REMARK', title: '描述', width:150, align: 'center'}
+	    	{field: 'STATUS', title: '选项状态', width:150, align: 'center',templet:function(row){if(d.STATUS=='1'){return ""}else{return ""}}},
+	    	{field: 'REMARK', title: '描述', width:250, align: 'center'}
 	    ]],
 	    done : function(){
 	       $('th').css({'background-color': '#009688', 'color': '#fff','font-weight':'bold'})
@@ -103,8 +104,6 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
   
   function add(){
 	  
-	  $("#add_form")[0].reset();
-	  
 	  var add = layer.open({ 
 		  type: 1, title:"新增字典",
 		  resize : false,
@@ -119,17 +118,25 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
 		  },
 		  success:function(){
 			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/dict/get/item/status', dataType : "json",
+				  type: 'POST',  url: '/api/v1/sys/dict/get/item/list/enable_disable_mark', dataType : "json",
 				  success: function(result) { 
 					  if(result.data.length>0){
+						  var html = "";
 						  $.each(result.data,function(index,value){
-							  var option =new Option(value.MENU_NAME,value.ID);
-							  $('[name="pid"]').append(option);
-							  form.render();
+							  if(value.ITEM_VALUE=='1'){
+								  html = html + '<input type="radio" name="status" value="'+value.ITEM_VALUE+'" title="'+value.ITEM_NAME+'" checked>'
+							  }else{
+								  html =  '<input type="radio" name="status" value="'+value.ITEM_VALUE+'" title="'+value.ITEM_NAME+'">'
+							  }
 						  })
+						  $('#add_form .status').append(html);
+						  form.render('radio');
 					  }
 				  }
 			  });
+		  },
+		  end:function(){
+			  location.reload();
 		  }
 	  });
 	  
@@ -140,11 +147,16 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
 				  if(result.data.status){
 					  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
 				  }else{
-					  layer.msg('保存失败['+result.data.message+']');
+					  layer.msg('保存失败 [ '+result.data.message+']');
 				  }
 			  }
 		  });
 		  return false;
+	  });
+	  
+	  form.on('radio(addform)', function(data){
+		  $('input:radio[name=status]')[0].checked = false;
+		  form.render('radio');
 	  });
   }
   
@@ -164,18 +176,26 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
 			  $("#modify_form_submit").trigger("click");
 		  },
 		  success:function(){
-			  /*$.ajax({
-				  type: 'POST',  url: '/api/v1/sys/menu/index/view', dataType : "json",
+			  $.ajax({
+				  type: 'POST',  url: '/api/v1/sys/dict/get/item/list/enable_disable_mark', dataType : "json",
 				  success: function(result) { 
 					  if(result.data.length>0){
+						  var html = "";
 						  $.each(result.data,function(index,value){
-							  var option =new Option(value.MENU_NAME,value.ID);
-							  $('[name="PID"]').append(option);
-							  form.render();
+							  if(value.ITEM_VALUE=='1'){
+								  html = html + '<input type="radio" name="STATUS" value="'+value.ITEM_VALUE+'" title="'+value.ITEM_NAME+'" checked>'
+							  }else{
+								  html =  '<input type="radio" name="STATUS" value="'+value.ITEM_VALUE+'" title="'+value.ITEM_NAME+'">'
+							  }
 						  })
+						  $('#modify_form .status').append(html);
+						  form.render('radio');
 					  }
 				  }
-			  });*/
+			  });
+		  },
+		  end:function(){
+			  location.reload();
 		  }
 	  });
 	  
