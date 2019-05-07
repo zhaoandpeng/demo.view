@@ -1,7 +1,7 @@
-layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'slider'], function(exports){  
+layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports){  
   
 	
-  var layer = layui.layer, element = layui.element, $ = layui.jquery,  table = layui.table,  form = layui.form,  iconPicker = layui.iconPicker, slider = layui.slider; 
+  var layer = layui.layer, element = layui.element, $ = layui.jquery,  table = layui.table,  form = layui.form; 
   
   var tableIns = table.render({
 	  	id:'mainData',
@@ -9,60 +9,21 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 	    skin:'row',
 	    even:true,
 	    toolbar:'#toolbar',
-	    url: '/api/v1/sys/menu/index/view',
+	    url: '/api/v1/sys/dict/index/view',
 	    page: true ,
 	    cols: [[ 
 	    	{checkbox: true,fixed: 'left'},
-	    	{field: 'MENU_NAME', title: '菜单名称', width:150, align: 'center'},
-	    	{field: 'MENU_URL', title: '菜单链接', width:400, align: 'center'},
-	    	{field: 'MENU_ICON', title: '菜单图标', width:150, align: 'center'},
-	    	{field: 'ORDER_NO', title: '权重', width:150, align: 'center'},
-	    	{field: 'CREATOR_NAME', title: '创建人', width:150, align: 'center'},
-	    	{field: 'CREATE_DATE', title: '创建时间', width:180, align: 'center'}
+	    	{field: 'ID', title: '主键', width:300, align: 'center'},
+	    	{field: 'PID', title: '父级', width:300, align: 'center'},
+	    	{field: 'ITEM_CODE', title: '选项名称', width:150, align: 'center'},
+	    	{field: 'ITEM_NAME', title: '选项名称', width:150, align: 'center'},
+	    	{field: 'ITEM_VALUE', title: '选项值', width:150, align: 'center'},
+	    	{field: 'STATUS', title: '选项状态', width:150, align: 'center'},
+	    	{field: 'REMARK', title: '描述', width:150, align: 'center'}
 	    ]],
 	    done : function(){
 	       $('th').css({'background-color': '#009688', 'color': '#fff','font-weight':'bold'})
 	    }
-  });
-  
-  iconPicker.render({
-	  elem: '#iconPicker_modify',// 选择器，推荐使用input
-//	  elem: '#iconPicker2',// 选择器，推荐使用input
-	  type: 'fontClass',// 数据类型：fontClass/unicode，推荐使用fontClass
-	  search: false,// 是否开启搜索：true/false，默认true
-	  page: false// 是否开启分页：true/false，默认true
-//	  limit: 20// 每页显示数量，默认12
-	  /*click: function (data) {
-          $('#add_form input[name="orderNo"]').val(data.icon);
-      }*/
-  });
-  
-  iconPicker.render({
-      elem: '#iconPicker_add',// 选择器，推荐使用input
-//      elem: '#iconPicker1',// 选择器，推荐使用input
-      type: 'fontClass',// 数据类型：fontClass/unicode，推荐使用fontClass
-      search: false,// 是否开启搜索：true/false，默认true
-      page: true,// 是否开启分页：true/false，默认true
-      limit: 20// 每页显示数量，默认12
-      /*click: function (data) {
-          $('#add_form input[name="orderNo"]').val(data.icon);
-      }*/
-  });
-  
-  var add_slider = slider.render({
-	  elem: '#slideOrderNo_add',
-	  value: 0, //初始值
-	  max:100,
-	  input: true, //输入框
-	  theme: '#FF5722'
-  });
-  
-  var modify_slider = slider.render({
-	  elem: '#slideOrderNo_modify',
-	  value: 0, //初始值
-	  max:100,
-	  input: true, //输入框
-	  theme: '#FF5722'
   });
   
   table.on('toolbar(operate)', function(obj){
@@ -75,50 +36,106 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 	  	};
   });
   
-  exports('base_menu', function(){ }); 
+  
+  exports('base_dict', function(){ }); 
+  
+  
+  /*加载父级选项码选择表*/
+  $(".btn_item_code").click(function(){
+	  
+	  var operate = this.value;
+	  
+	  table.on('rowDouble(item_code)', function(row){
+		  
+		  var pid = row.data.ID;
+		  
+		  var item_code = row.data.ITEM_CODE;
+		  
+		  if(operate.indexOf('add')!=-1){
+			  
+			  $('#add_form input[name="PID"]').val(pid);
+			  
+			  $('#add_form input[name="PARENT_ITEM_CODE"]').val(item_code);
+			  
+		  }
+		  if(operate.indexOf('modify')!=-1){
+			  
+			  $('#modify_form input[name="PID"]').val(pid);
+			  
+			  $('#modify_form input[name="PARENT_ITEM_CODE"]').val(item_code);
+			  
+		  }
+		  
+		  layer.close(view_item_code);
+	  });
+	  
+	  var view_item_code = layer.open({ 
+		  type: 1, title:"父级选项码选择表",
+		  resize : false,
+		  maxmin: true,
+		  btnAlign: 'c',
+		  area: ['650px', '400px'],
+		  skin: 'demo-class',
+		  content: $('#div_item_code_tab'),
+		  success:function(){
+			  $('#div_item_code_tab').css('display','block');
+		  }
+	  });
+	  
+	  var item_code_tab = table.render({
+		  id:'itemCodeData',
+		  elem: '#tab_item_code',
+		  skin:'row',
+		  even:true,
+		  url: '/api/v1/sys/dict/get/item/code',
+		  page: true ,
+		  cols: [[ 
+			  {field: 'PID', title: '父级标识', width:150, align: 'center',hide:true},
+			  {field: 'ITEM_CODE', title: '选项码', width:150, align: 'center'},
+			  {field: 'ITEM_NAME', title: '选项描述', width:150, align: 'center'},
+			  {field: 'STATUS', title: '选项状态', width:150, align: 'center'}
+			  ]],
+			  done : function(){
+				  $('th').css({'background-color': '#009688', 'color': '#fff','font-weight':'bold'})
+			  }
+	  });
+  })
   
   function add(){
 	  
+	  $("#add_form")[0].reset();
+	  
 	  var add = layer.open({ 
-		  type: 1, title:"新增菜单",
+		  type: 1, title:"新增字典",
 		  resize : false,
 		  maxmin: true,
 		  btn: [ '保存', '取消', ],
 		  btnAlign: 'c',
-		  area: ['650px', '480px'],
+		  area: ['650px', '450px'],
 		  skin: 'demo-class',
 		  content: $('#add_form'),
 		  yes:function(index,layero){
-			  
-			  var orderNo = $(".demo-slider .layui-slider-input .layui-slider-input-txt .layui-input").val();
-			 
-			  $('#add_form input[name="orderNo"]').val(orderNo);
-			  
 			  $("#add_form_submit").trigger("click");
 		  },
 		  success:function(){
 			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/menu/index/view', dataType : "json",
+				  type: 'POST',  url: '/api/v1/sys/dict/get/item/status', dataType : "json",
 				  success: function(result) { 
 					  if(result.data.length>0){
 						  $.each(result.data,function(index,value){
 							  var option =new Option(value.MENU_NAME,value.ID);
-							  $('[name="PID"]').append(option);
-							  form.render('select');
+							  $('[name="pid"]').append(option);
+							  form.render();
 						  })
 					  }
 				  }
 			  });
-			  $(".layui-slider-input").css('margin-top','15px')
-		  },
-		  end:function(){
-			  location.reload();
 		  }
 	  });
 	  
 	  form.on('submit(addform)', function(data){
 		  $.ajax({
-			  type: 'POST',  url: '/api/v1/sys/menu/add_or_update', dataType : "json", data: data.field,
+			  type: 'POST',  url: '/api/v1/sys/dict/add_or_update', dataType : "json", data: data.field,
 			  success: function(result) { 
 				  if(result.data.status){
 					  layer.msg('保存成功'); layer.close(add);  tableIns.reload({ page:{ curr: 1 }});
@@ -135,10 +152,8 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 	  
 	  form.val('modify_form', data[0]);
 	  
-	  modify_slider.setValue(data[0].ORDER_NO);
-	 
 	  var modify = layer.open({ 
-		  type: 1, title:"修改菜单",
+		  type: 1, title:"修改字典",
 		  resize : false,
 		  btn: [  '保存', '取消', ],
 		  btnAlign: 'c',
@@ -146,11 +161,10 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 		  skin: 'demo-class',
 		  content: $('#modify_form'),
 		  yes:function(index,layero){
-			  
 			  $("#modify_form_submit").trigger("click");
 		  },
 		  success:function(){
-			  $.ajax({
+			  /*$.ajax({
 				  type: 'POST',  url: '/api/v1/sys/menu/index/view', dataType : "json",
 				  success: function(result) { 
 					  if(result.data.length>0){
@@ -161,18 +175,13 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 						  })
 					  }
 				  }
-			  });
-			  
-			  $(".layui-slider-input").css('margin-top','15px')
-		  },
-		  end:function(){
-			  location.reload();
+			  });*/
 		  }
 	  });
 	  
 	  form.on('submit(modifyform)', function(data){
 		  $.ajax({
-			  type: 'POST',  url: '/api/v1/sys/menu/add_or_update', dataType : "json", data: data.field,
+			  type: 'POST',  url: '/api/v1/sys/dict/add_or_update', dataType : "json", data: data.field,
 			  success: function(result) { 
 				  if(result.data.status){
 					  layer.msg('修改成功'); layer.close(modify);  tableIns.reload({ page:{ curr: 1 }});
@@ -195,7 +204,7 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 		  ids.push(value.ID);
 	  })
 	  $.ajax({
-		  type: 'POST',  url: '/api/v1/sys/menu/delete/'+ids.join(','), dataType : "json",
+		  type: 'POST',  url: '/api/v1/sys/dict/delete/'+ids.join(','), dataType : "json",
 		  success: function(result) { 
 			  if(result.data.status){
 				  layer.msg('删除成功');  tableIns.reload({ page:{ curr: 1 }});
