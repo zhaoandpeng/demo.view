@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cn.demo.view.model.BaseDictionary;
 import com.cn.demo.view.service.BaseDictionaryService;
 import com.cn.demo.view.utils.EventType;
+import com.cn.demo.view.utils.PageHelper;
 
 import io.netty.util.internal.StringUtil;
 
@@ -33,13 +34,14 @@ public class BaseDictionaryController extends BaseController{
 		return "system/dict/index";
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/index/view")
 	public String index_view() {
 		
-		List<BaseDictionary> list = baseDictionaryService.getList(BaseDictionary.class, null);
+		PageHelper page = baseDictionaryService.getListMapByPage(null, getPageHelp());
 		
-		return toJson(list,list==null? 0 : list.size());
+		return toJson(page.getResult(),(int)page.getTotalCount());
 	}
 	
 	
@@ -57,14 +59,24 @@ public class BaseDictionaryController extends BaseController{
 	}
 	
 	@ResponseBody
-	@RequestMapping("/get/item/list/{parentcode}")
-	public String getItemListByParentCode(@PathVariable("parentcode") String parentCode) {
+	@RequestMapping("/get/item/list/{parentCode}")
+	public String getItemListByParentCode(@PathVariable("parentCode") String parentCode) {
 		
 		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
 		
 		map.put("ITEM_CODE", parentCode);
 		
 		List<BaseDictionary> list = baseDictionaryService.getList(BaseDictionary.class, map);
+		
+		if(null!=list) {
+			
+			BaseDictionary model  = list.get(0);  map.clear();
+			
+			map.put("PID", model.getID());
+			
+			list = baseDictionaryService.getList(BaseDictionary.class, map);
+			
+		}
 		
 		return toJson(list,list==null? 0 : list.size());
 	}

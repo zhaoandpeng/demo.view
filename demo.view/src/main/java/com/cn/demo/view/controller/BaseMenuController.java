@@ -18,6 +18,7 @@ import com.cn.demo.view.model.BaseMenu;
 import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.service.BaseMenuService;
 import com.cn.demo.view.utils.EventType;
+import com.cn.demo.view.utils.PageHelper;
 
 import io.netty.util.internal.StringUtil;
 import net.sf.json.JSONArray;
@@ -41,9 +42,21 @@ public class BaseMenuController extends BaseController{
 	@RequestMapping("/index/view")
 	public String index_view() {
 		
-		List<BaseMenu> list = baseMenuService.getList(BaseMenu.class, null);
+		String pageNo = getRequest().getParameter("page");
 		
-		return toJson(list,list.size());
+		String pageSize = getRequest().getParameter("limit");
+		
+		PageHelper<BaseMenu> page = new PageHelper<BaseMenu>();
+		
+		page.setPageNo(Integer.parseInt(pageNo));
+		
+		page.setPageSize(Integer.parseInt(pageSize));
+		
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
+		
+		page = baseMenuService.getListObjectPage(BaseMenu.class, map, page);
+		
+		return toJson(page.getResult(),(int)page.getTotalCount());
 	}
 	
 	

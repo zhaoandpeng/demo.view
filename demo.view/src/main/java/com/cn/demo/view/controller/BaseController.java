@@ -11,6 +11,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.utils.JsonDateValueProcessor;
+import com.cn.demo.view.utils.PageHelper;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -69,5 +70,13 @@ public class BaseController {
 		
 		return user;
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public PageHelper getPageHelp() {
+		
+		return new PageHelper<>();
+	}
+	
+	
 	
 }
