@@ -29,7 +29,7 @@ public class BaseDictionaryServiceImpl  extends BaseServiceImpl<BaseDictionary,j
 		
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append("SELECT T.ID, T.PID, T.ITEM_CODE, T.ITEM_NAME, T.ITEM_VALUE, T.REMARK, (CASE WHEN T.`STATUS` = '1' THEN '启用'  WHEN T.`STATUS` = '0' THEN '禁用'  END) AS STATUS, IFNULL (A.ITEM_CODE, 0) AS PARENT_ITEM_CODE FROM BASE_DICTIONARY T LEFT JOIN BASE_DICTIONARY A ON T.PID = A.ID WHERE t.`STATUS` = '1' ");
+		buffer.append("SELECT T.ID, T.PID, T.ITEM_CODE, T.ITEM_NAME, T.ITEM_VALUE, T.REMARK, (CASE WHEN T.`STATUS` = '1' THEN '启用'  WHEN T.`STATUS` = '0' THEN '禁用'  END) AS STATUS, IFNULL (A.ITEM_CODE, 0) AS PARENT_ITEM_CODE FROM BASE_DICTIONARY T LEFT JOIN BASE_DICTIONARY A ON T.PID = A.ID WHERE 1 = 1 ");
 		
 		if(null!= map&&!map.isEmpty()) {
 			
