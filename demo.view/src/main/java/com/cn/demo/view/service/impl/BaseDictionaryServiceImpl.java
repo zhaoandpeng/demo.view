@@ -27,7 +27,9 @@ public class BaseDictionaryServiceImpl  extends BaseServiceImpl<BaseDictionary,j
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PageHelper getListMapByPage(ConcurrentHashMap<String,Object> map, PageHelper page){
 		
-		StringBuffer buffer = new StringBuffer(" select t.*, IFNULL (a.item_code, 0) as PARENT_ITEM_CODE from base_dictionary t left join base_dictionary a on t.pid = a.id where 1 = 1");
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("SELECT T.ID, T.PID, T.ITEM_CODE, T.ITEM_NAME, T.ITEM_VALUE, T.REMARK, (CASE WHEN T.`STATUS` = '1' THEN '启用'  WHEN T.`STATUS` = '0' THEN '禁用'  END) AS STATUS, IFNULL (A.ITEM_CODE, 0) AS PARENT_ITEM_CODE FROM BASE_DICTIONARY T LEFT JOIN BASE_DICTIONARY A ON T.PID = A.ID WHERE t.`STATUS` = '1' ");
 		
 		if(null!= map&&!map.isEmpty()) {
 			
