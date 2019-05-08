@@ -19,8 +19,8 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
 	    	{field: 'ITEM_CODE', title: '选项码', width:180, align: 'center'},
 	    	{field: 'ITEM_NAME', title: '选项名称', width:150, align: 'center'},
 	    	{field: 'ITEM_VALUE', title: '选项值', width:150, align: 'center'},
-	    	{field: 'STATUS', title: '选项状态', width:150, align: 'center',templet:function(row){if(d.STATUS=='1'){return ""}else{return ""}}},
-	    	{field: 'REMARK', title: '描述', width:250, align: 'center'}
+	    	{field: 'STATUS', title: '选项状态', width:150, align: 'center'},
+	    	{field: 'REMARK', title: '描述', width:250, align: 'center',hide:true}
 	    ]],
 	    done : function(){
 	       $('th').css({'background-color': '#009688', 'color': '#fff','font-weight':'bold'})
@@ -91,10 +91,10 @@ layui.define(['layer', 'element', 'jquery', 'table',  'form'], function(exports)
 		  url: '/api/v1/sys/dict/get/item/code',
 		  page: true ,
 		  cols: [[ 
-			  {field: 'PID', title: '父级标识', width:150, align: 'center',hide:true},
-			  {field: 'ITEM_CODE', title: '选项码', width:150, align: 'center'},
-			  {field: 'ITEM_NAME', title: '选项描述', width:150, align: 'center'},
-			  {field: 'STATUS', title: '选项状态', width:150, align: 'center'}
+			  {field: 'PID', title: '父级主键', width:150, align: 'center',hide:true},
+			  {field: 'ITEM_CODE', title: '选项码', width:200, align: 'center'},
+			  {field: 'ITEM_NAME', title: '选项描述', width:250, align: 'center'},
+			  {field: 'STATUS', title: '选项状态', width:150, align: 'center',hide:true}
 			  ]],
 			  done : function(){
 				  $('th').css({'background-color': '#009688', 'color': '#fff','font-weight':'bold'})
