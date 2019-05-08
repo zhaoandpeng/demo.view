@@ -92,13 +92,13 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 			  
 			  var orderNo = $(".demo-slider .layui-slider-input .layui-slider-input-txt .layui-input").val();
 			 
-			  $('#add_form input[name="orderNo"]').val(orderNo);
+			  $('#add_form input[name="ORDER_NO"]').val(orderNo);
 			  
 			  $("#add_form_submit").trigger("click");
 		  },
 		  success:function(){
 			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/menu/index/view', dataType : "json",
+				  type: 'POST',  url: '/api/v1/sys/menu/list/view', dataType : "json",
 				  success: function(result) { 
 					  if(result.data.length>0){
 						  $.each(result.data,function(index,value){
@@ -151,7 +151,7 @@ layui.define(['layer', 'element', 'jquery', 'table',  'iconPicker', 'form', 'sli
 		  },
 		  success:function(){
 			  $.ajax({
-				  type: 'POST',  url: '/api/v1/sys/menu/index/view', dataType : "json",
+				  type: 'POST',  url: '/api/v1/sys/menu/list/view', dataType : "json",
 				  success: function(result) { 
 					  if(result.data.length>0){
 						  $.each(result.data,function(index,value){
