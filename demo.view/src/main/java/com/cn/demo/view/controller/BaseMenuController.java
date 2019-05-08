@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cn.demo.view.model.BaseMenu;
+import com.cn.demo.view.model.BaseRoleResources;
 import com.cn.demo.view.model.BaseUser;
 import com.cn.demo.view.service.BaseMenuService;
+import com.cn.demo.view.service.BaseRoleResourceService;
 import com.cn.demo.view.utils.EventType;
 import com.cn.demo.view.utils.PageHelper;
+import com.mysql.cj.util.StringUtils;
 
 import io.netty.util.internal.StringUtil;
 import net.sf.json.JSONArray;
@@ -30,6 +33,10 @@ public class BaseMenuController extends BaseController{
 
 	@Resource
 	private BaseMenuService baseMenuService;
+	
+	
+	@Resource
+	private BaseRoleResourceService baseRoleResourceService;
 	
 	
 	@RequestMapping(value = "/index")
@@ -59,16 +66,37 @@ public class BaseMenuController extends BaseController{
 		return toJson(page.getResult(),(int)page.getTotalCount());
 	}
 	
+	@ResponseBody
+	@RequestMapping("/list/view")
+	public String list_view() {
+		
+		List<BaseMenu> list = baseMenuService.getList(BaseMenu.class, null);
+		
+		return toJson(list,null==list?0:list.size());
+	}
+	
 	
 	@ResponseBody
 	@RequestMapping("/index/data")
 	public String index_data() {
 		
-		List<BaseMenu> userResource = getCurrentBaseUser().getRoleResources();
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
+		
+		String roleId = getRequest().getParameter("id");
+		
+		if(!StringUtils.isNullOrEmpty(roleId)) {
+			
+			map.put("ROLE_ID", roleId);
+		}
+		
+		List<BaseRoleResources> listRoleResources = baseRoleResourceService.getList(BaseRoleResources.class, map);
 		
 		List<String> menusListId = new ArrayList<String>();
 		
-		userResource.stream().forEach(model -> menusListId.add(model.getID()));
+		if(null!=listRoleResources) {
+			
+			listRoleResources.stream().forEach(model -> menusListId.add(model.getMenuId()));
+		}
 		
 		List<BaseMenu> list = baseMenuService.getList(BaseMenu.class, null);
 		
@@ -102,7 +130,6 @@ public class BaseMenuController extends BaseController{
 					
 					node.put("checked", true);
 				}
-				
 				
 				ztree.add(node);
 			}
