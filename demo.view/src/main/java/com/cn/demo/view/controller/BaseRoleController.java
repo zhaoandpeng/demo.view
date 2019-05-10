@@ -11,9 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.cn.demo.view.model.BaseRole;
 import com.cn.demo.view.service.BaseRoleService;
 import com.cn.demo.view.utils.EventType;
+import com.cn.demo.view.utils.PageHelper;
 
 import io.netty.util.internal.StringUtil;
 
@@ -36,9 +38,21 @@ public class BaseRoleController extends BaseController{
 	@RequestMapping(value = "/index/data")
 	public String index_view() {
 		
-		List<BaseRole> list = baseRoleService.getList(BaseRole.class, null);
+		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
 		
-		return toJson(list, list.size());
+		String pageNo = getRequest().getParameter("page");
+		
+		String pageSize = getRequest().getParameter("limit");
+		
+		PageHelper<BaseRole> page = new PageHelper<BaseRole>();
+		
+		page.setPageNo(Integer.parseInt(pageNo));
+		
+		page.setPageSize(Integer.parseInt(pageSize));
+		
+		page = baseRoleService.getListObjectPage(BaseRole.class, map, page);
+		
+		return toJson(page.getResult(),(int)page.getTotalCount());
 	}
 	
 	@ResponseBody
@@ -110,7 +124,7 @@ public class BaseRoleController extends BaseController{
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/delete/{id}")
+	@RequestMapping(value = "/delete/{id}") //TODO 角色删除后对应的角色资源是否需要同时删除
 	public String delete(@PathVariable("id") String id) throws SQLException {
 		
 		ConcurrentHashMap<String,Object> resultMap = new ConcurrentHashMap<>();

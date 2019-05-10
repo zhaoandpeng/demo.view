@@ -39,7 +39,17 @@ public class BaseDictionaryController extends BaseController{
 	@RequestMapping("/index/view")
 	public String index_view() {
 		
-		PageHelper page = baseDictionaryService.getListMapByPage(null, getPageHelp());
+		String pageNo = getRequest().getParameter("page");
+		
+		String pageSize = getRequest().getParameter("limit");
+		
+		PageHelper page = new PageHelper();
+		
+		page.setPageNo(Integer.parseInt(pageNo));
+		
+		page.setPageSize(Integer.parseInt(pageSize));
+		
+		page = baseDictionaryService.getListMapByPage(null, page);
 		
 		return toJson(page.getResult(),(int)page.getTotalCount());
 	}
@@ -51,11 +61,23 @@ public class BaseDictionaryController extends BaseController{
 		
 		ConcurrentHashMap<String,Object> map = new ConcurrentHashMap<>();
 		
+		String pageNo = getRequest().getParameter("page");
+		
+		String pageSize = getRequest().getParameter("limit");
+		
+		PageHelper<BaseDictionary> page = new PageHelper<BaseDictionary>();
+		
+		page.setPageNo(Integer.parseInt(pageNo));
+		
+		page.setPageSize(Integer.parseInt(pageSize));
+		
 		map.put("PID", '0');
 		
-		List<BaseDictionary> list = baseDictionaryService.getList(BaseDictionary.class, map);
+		map.put("STATUS", '1'); //默认查询启用状态的数据字典
 		
-		return toJson(list,list==null? 0 : list.size());
+		page = baseDictionaryService.getListObjectPage(BaseDictionary.class, map, page);
+		
+		return toJson(page.getResult(),(int)page.getTotalCount());
 	}
 	
 	@ResponseBody
