@@ -53,9 +53,6 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		  
 		  return count==1? true:false;
 		 
-//		getListPage((Class<T>) BaseRole.class,new ConcurrentHashMap<String,Object>());
-		
-//		return false;
 	}
 	
 	public int deleteBatch(final List<T> list, ConcurrentHashMap<String,Object> map) {
@@ -75,22 +72,6 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		}
 		
 		int count = jdbcTemplate.update(buffer.toString());
-		
-//		List<Object> listField = new ArrayList<>();
-		
-//		
-//		Field[] declaredFields = clazz.getDeclaredFields();
-//		
-//		for (Field field : declaredFields) {
-//			
-//			if(field.getName().indexOf("serialVersionUID")!=-1) { continue; }
-//			
-//			buffer.append("and "+field.getName()+"= ?");
-//			
-//			
-//		}
-//		int[] batchUpdate = null;
-//		int[] batchUpdate = jdbcTemplate.batchUpdate(buffer.toString(), );
 		
 		return count;
 	}
@@ -248,17 +229,6 @@ public class BaseDaoImpl<T, K> implements BaseDao<T, java.lang.String> {
 		
 		return entry;
 	}
-	/*
-	 * public static void main(String[] args) { List<String> list = new
-	 * ArrayList<>();
-	 * 
-	 * 
-	 * list.add("1"); list.add("2"); list.add("3"); list.add("4"); list.add("5");
-	 * 
-	 * 
-	 * 
-	 * }
-	 */
 
 	@Override
 	@SuppressWarnings("static-access")
